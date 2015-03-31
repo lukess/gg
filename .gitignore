@@ -1,0 +1,4 @@
+Makefile
+dist/*
+bin/*
+.gg

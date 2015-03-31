@@ -16,6 +16,13 @@ gg Commands:
 * make    // make file template
 * mkdirs  // create directories - dist/src
 
+Build
+=====
+Modify OSS in Makefile if there is no cross compile environment.
+
+	$ make
+	$ sudo ln -s ~/dev/gg/dist/{OS}/gg /usr/bin/gg
+
 Example
 =====
 1.create project directory

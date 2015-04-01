@@ -15,7 +15,7 @@ var (
 	envp     = "/.gg/env"
 	template = `
 [core]
-PS1=gg:\w \u\$
+PS1=\e[0;32mgg\e[m:\w \u\$
 GOROOT=%s
 GOPATH=%s
 [lib]
@@ -57,7 +57,7 @@ func Setenv() {
 	}
 }
 
-func Env() {
+func Env(args []string) {
 	wd, err := env_check()
 	if err != nil {
 		fmt.Println("env file does not exist")
@@ -77,8 +77,11 @@ func Env() {
 		}
 		var proc *os.Process
 		if runtime.GOOS != "windows" {
-			//proc, err = os.StartProcess("/usr/bin/login", []string{"login", "-fpl", os.Getenv("USER")}, &pa)
-			proc, err = os.StartProcess(os.Getenv("SHELL"), []string{os.Getenv("SHELL")}, &pa)
+			if len(args) == 0 {
+				proc, err = os.StartProcess(os.Getenv("SHELL"), []string{"sh"}, &pa)
+			} else {
+				proc, err = os.StartProcess(os.Getenv("SHELL"), []string{"sh", "-c", strings.Join(args, " ")}, &pa)
+			}
 		}
 
 		if err != nil {

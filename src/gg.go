@@ -55,7 +55,7 @@ COMMANDS:
 		case command == "setenv":
 			cmds.Setenv()
 		case command == "env":
-			cmds.Env()
+			cmds.Env(os.Args[2:])
 		case command == "get":
 			cmds.Get()
 		case command == "getpath":

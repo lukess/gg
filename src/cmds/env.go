@@ -69,7 +69,7 @@ func Env() {
 		env = append(env, fmt.Sprintf("%s=%s", "GOPATH", ini.Get("core", "GOPATH")))
 		env = append(env, fmt.Sprintf("%s=%s", "TERM", "xterm-color"))
 		env = append(env, fmt.Sprintf("%s=%s ", "PS1", ini.Get("core", "PS1")))
-		env = append(env, fmt.Sprintf("%s=%s ", "HOME", os.Getenv("HOME")))
+		env = append(env, fmt.Sprintf("%s=%s", "HOME", os.Getenv("HOME")))
 		pa := os.ProcAttr{
 			Files: []*os.File{os.Stdin, os.Stdout, os.Stderr},
 			Dir:   wd,

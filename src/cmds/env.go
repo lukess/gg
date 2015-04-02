@@ -15,9 +15,13 @@ var (
 	envp     = "/.gg/env"
 	template = `
 [core]
+[export]
+PATH=/usr/bin:/bin:%s/bin
 PS1=\e[0;32mgg\e[m:\w \u\$
 GOROOT=%s
 GOPATH=%s
+HOME=%s
+TERM=%s
 [lib]
 `
 )
@@ -48,7 +52,7 @@ func Setenv() {
 				root = "C:\\go"
 			}
 		}
-		env := fmt.Sprintf(template, root, wd)
+		env := fmt.Sprintf(template, os.Getenv("GOROOT"), root, wd, os.Getenv("HOME"), os.Getenv("TERM"))
 		if err := ioutil.WriteFile(wd+envp, []byte(env), 0644); err != nil {
 			fmt.Println(err)
 		}
@@ -64,12 +68,15 @@ func Env(args []string) {
 	} else {
 		ini.Init(wd + envp)
 		env := []string{}
-		env = append(env, fmt.Sprintf("PATH=/usr/bin:/bin:%s/bin", ini.Get("core", "GOROOT")))
-		env = append(env, fmt.Sprintf("%s=%s", "GOROOT", ini.Get("core", "GOROOT")))
-		env = append(env, fmt.Sprintf("%s=%s", "GOPATH", ini.Get("core", "GOPATH")))
-		env = append(env, fmt.Sprintf("%s=%s", "TERM", "xterm-color"))
-		env = append(env, fmt.Sprintf("%s=%s ", "PS1", ini.Get("core", "PS1")))
-		env = append(env, fmt.Sprintf("%s=%s", "HOME", os.Getenv("HOME")))
+		for _, e := range ini.GetAll("export") {
+			if pairs := strings.Split(e, "="); len(pairs) == 2 {
+				if pairs[0] == "PS1" {
+					env = append(env, fmt.Sprintf("%s=%s ", pairs[0], pairs[1]))
+				} else {
+					env = append(env, fmt.Sprintf("%s=%s", pairs[0], pairs[1]))
+				}
+			}
+		}
 		pa := os.ProcAttr{
 			Files: []*os.File{os.Stdin, os.Stdout, os.Stderr},
 			Dir:   wd,

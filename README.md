@@ -8,13 +8,32 @@ Feature:
 * get $GOPATH
 
 gg Commands:
-* setenv  // add .gg/env file
-* env     // shell with env environment
-* get     // git clone libs defined in the .gg/env
-* getpath // echo $GOPATH
-* getroot // echo $GOROOT
-* make    // make file template
-* mkdirs  // create directories - dist/src
+
+```bash
+// add .gg/env file
+$ gg setenv
+
+// shell with env environment
+$ gg env
+
+// exec command in gg env
+$ gg env make | gg getpath ...
+
+// git clone libs defined in the .gg/env
+$ gg get
+
+// echo $GOPATH
+$ gg getpath
+
+// echo $GOROOT
+$ gg getroot
+
+// make file template
+$ gg make
+
+// create directories - dist/src
+$ gg mkdirs
+```
 
 Build
 =====

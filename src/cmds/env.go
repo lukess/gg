@@ -5,16 +5,13 @@ import (
 	"ini"
 	"io/ioutil"
 	"os"
-	"os/exec"
-	"path/filepath"
 	"runtime"
 	"strings"
 )
 
 var (
-	envp     = "/.gg/env"
+	envp     = "/gg"
 	template = `
-[core]
 [export]
 PATH=/usr/bin:/bin:%s/bin
 PS1=\e[0;32mgg\e[m:\w \u\$
@@ -41,8 +38,7 @@ func Setenv() {
 	wd, err := env_check()
 	if err != nil {
 		fmt.Println(err)
-		fmt.Println("generating env file")
-		os.Mkdir(".gg", 0755)
+		fmt.Println("generating gg file")
 		root := os.Getenv("GOROOT")
 		if root == "" {
 			if runtime.GOOS != "windows" {
@@ -97,53 +93,6 @@ func Env(args []string) {
 		_, err = proc.Wait()
 		if err != nil {
 			panic(err)
-		}
-	}
-}
-
-// from https://github.com/golang/go/blob/master/src/cmd/go/get.go
-func runErr(cmd *exec.Cmd) error {
-	out, err := cmd.CombinedOutput()
-	if err != nil {
-		if len(out) == 0 {
-			return err
-		}
-		return fmt.Errorf("%s\n%v", out, err)
-	}
-	fmt.Println(string(out[:]))
-	return nil
-}
-
-func Get() {
-	wd, err := env_check()
-	if err != nil {
-		fmt.Println("env file does not exist")
-	} else {
-		ini.Init(wd + envp)
-		libs := ini.GetAll("lib")
-		for _, url := range libs {
-			// url: lib[0], tag/branch: lib[1]
-			lib := strings.Split(url, "=")
-			if len(lib) != 2 {
-				continue
-			}
-			// parse repo url
-			repo_url := strings.TrimPrefix(strings.TrimPrefix(lib[0], "http://"), "https://")
-			dir, file := filepath.Split(repo_url)
-			filename := strings.TrimSuffix(file, filepath.Ext(file))
-			// get the first element from GOPATH
-			paths := strings.Split(ini.Get("core", "GOPATH"), ":")
-			if len(paths) < 1 {
-				fmt.Println("cannot read GOPATH")
-				continue
-			}
-			repo_path := fmt.Sprintf("%s/src/%s", paths[0], dir)
-			os.MkdirAll(repo_path, 0755)
-			if strings.Contains(file, ".git") {
-				runErr(exec.Command("git", "clone", "-b", lib[1], lib[0], repo_path+filename))
-			} else {
-				fmt.Printf("%s not a git repo\n", repo_url)
-			}
 		}
 	}
 }

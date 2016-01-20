@@ -10,7 +10,7 @@ Feature:
 gg Commands:
 
 ```bash
-// add .gg/env file
+// add gg file
 $ gg setenv
 
 // shell with env environment
@@ -19,14 +19,17 @@ $ gg env
 // exec command in gg env
 $ gg env make | gg getpath ...
 
-// git clone libs defined in the .gg/env
-$ gg get
-
 // echo $GOPATH
 $ gg getpath
 
 // echo $GOROOT
 $ gg getroot
+
+// git clone libs defined in the gg file
+$ gg get
+
+// git command for a repo id
+$ gg git logrus git status
 
 // make file template
 $ gg make
@@ -35,6 +38,26 @@ $ gg make
 $ gg mkdirs
 ```
 
+Config
+=====
+an example config file - gg
+
+```
+[export]
+PATH=/usr/bin:/bin:/Users/luke/dev/go/bin
+PS1=\e[0;32mgg\e[m:\w \u\$
+GOROOT=/Users/luke/dev/go
+GOPATH=/Users/luke/dev/recurring
+HOME=/Users/luke
+TERM=xterm-color
+[lib]
+context=https://github.com/gorilla/context.git,branch,master
+mux=https://github.com/gorilla/mux.git,branch,master
+logurs=https://github.com/Sirupsen/logrus.git,tag,v0.8.7
+```
+
+lib section format: {repo_id}={repo_url},{branch/tag/commit},{branch name/tag name/commit hash}
+
 Build
 =====
 Modify OSS in Makefile if there is no cross compile environment.
@@ -42,7 +65,7 @@ Modify OSS in Makefile if there is no cross compile environment.
 	$ make
 	$ sudo ln -s ~/dev/gg/dist/{OS}/gg /usr/bin/gg
 
-Example
+Usage
 =====
 1.create project directory
 
@@ -57,8 +80,8 @@ Example
 3.create gg config in .gg/env, and add a dependency
 
 	$ gg setenv
-	$ cat .gg/env
-	$ echo "https://github.com/golang/example.git=master" >> .gg/env
+	$ cat gg
+	$ echo "example=https://github.com/golang/example.git,branch,master" >> .gg/env
 	$ gg env
     #########################
     ## download dependency ##
@@ -94,4 +117,3 @@ func main() {
 Misc
 =====
 [GOROOT environment variable is the path of Go binary distributions, and GOPATH specifies the location of your workspace.](https://golang.org/doc/code.html)
-

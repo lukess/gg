@@ -56,12 +56,14 @@ COMMANDS:
 			cmds.Setenv()
 		case command == "env":
 			cmds.Env(os.Args[2:])
-		case command == "get":
-			cmds.Get()
 		case command == "getpath":
 			fmt.Println(os.Getenv("GOPATH"))
 		case command == "getroot":
 			fmt.Println(os.Getenv("GOROOT"))
+		case command == "get":
+			cmds.Get()
+		case command == "git":
+			cmds.Git(os.Args[2:])
 		case command == "make":
 			cmds.Make()
 		case command == "mkdirs":
